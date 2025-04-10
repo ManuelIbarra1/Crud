@@ -12,7 +12,7 @@ import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
 class TareaViewModel : ViewModel() {
-    private val db = Firebase.firestore
+    private val db = Firebase.firestore;
 
     private var _listaTareas = MutableLiveData<List<Tarea>>(emptyList())
     val listaTareas: LiveData<List<Tarea>> = _listaTareas
@@ -26,7 +26,9 @@ class TareaViewModel : ViewModel() {
             try {
                 val resultado = db.collection("tareas").get().await()
 
-                val tareas = resultado.documents.mapNotNull { it.toObject(Tarea::class.java) }
+                val tareas = resultado.documents.mapNotNull {
+                    it.toObject(Tarea::class.java)
+                }
                 _listaTareas.postValue(tareas)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -39,11 +41,12 @@ class TareaViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 db.collection("tareas").document(tarea.id).set(tarea).await()
-                _listaTareas.postValue(_listaTareas.value.orEmpty() + tarea)
+                _listaTareas.postValue(_listaTareas.value?.plus(tarea))
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+        obtenerTareas()
     }
 
     fun actualizarTarea(tarea: Tarea) {
@@ -55,6 +58,7 @@ class TareaViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
+        obtenerTareas()
     }
 
     fun borrarTarea(id: String) {
@@ -66,5 +70,6 @@ class TareaViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
+        obtenerTareas()
     }
 }

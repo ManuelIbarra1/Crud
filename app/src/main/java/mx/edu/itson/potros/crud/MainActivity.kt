@@ -39,14 +39,20 @@ class MainActivity : AppCompatActivity() {
                 titulo = binding.etTitulo.text.toString(),
                 descripcion = binding.etDescripcion.text.toString()
             )
+
             viewModel.agregarTareas(tarea)
+
             binding.etTitulo.setText("")
             binding.etDescripcion.setText("")
         }
 
         binding.btnActualizarTarea.setOnClickListener {
+            tareaEdit.titulo = ""
+            tareaEdit.descripcion = ""
+
             tareaEdit.titulo = binding.etTitulo.text.toString()
             tareaEdit.descripcion = binding.etDescripcion.text.toString()
+
             viewModel.actualizarTarea(tareaEdit)
         }
     }
